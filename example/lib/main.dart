@@ -20,6 +20,11 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [
         //   Refresh.delegate()
       ],
+      routes: {
+        'route':(BuildContext context){
+          return null;
+        },
+      }
     );
   }
 }
@@ -38,8 +43,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return new Padding(
       key: new Key(index.toString()),
       padding: new EdgeInsets.all(10.0),
-      child: new Text(
-        "顺序数据:${index} ",
+      child: new Text("顺序数据:$index",
         style: new TextStyle(fontSize: 14.0),
       ),
     );
@@ -49,6 +53,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    Navigator.popUntil(context, (Route<dynamic> route){
+      if(route.settings.name == ''){
+
+      }
+    });
+    /*
+    Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context){
+
+      return null;
+
+    })).then((data){
+
+
+
+    });*/
+
+
+
     _itemCount = 10;
     super.initState();
   }
@@ -71,6 +93,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return new Scaffold(
         appBar: new AppBar(
           title: new Text(widget.title),

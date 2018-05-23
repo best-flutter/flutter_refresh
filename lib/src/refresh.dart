@@ -7,9 +7,7 @@ import 'package:flutter_refresh/src/refresh_child.dart';
 import 'package:flutter_refresh/src/refresh_controller.dart';
 import 'package:flutter_refresh/src/refresh_widget.dart';
 
-/**
- * Only support 3 types of direct child
- */
+///Only support 3 types of direct child
 bool checkChild(Widget src) {
   switch (src.runtimeType) {
     case GridView:
@@ -23,9 +21,7 @@ bool checkChild(Widget src) {
   return false;
 }
 
-/**
- *
- */
+
 typedef Widget RefreshScrollViewBuilder(BuildContext context,
     {ScrollController controller, ScrollPhysics physics});
 
@@ -56,7 +52,7 @@ class Refresh extends StatefulWidget {
       this.scrollController,
       this.onHeaderRefresh,
       this.child,
-      RefreshController controller,
+      this.controller,
       this.physics,
       this.onFooterRefresh})
       : super(key: key) {
@@ -133,25 +129,23 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
     }
   }
 
-  /**
-   *
-   * State machine:
-   *
-   * Darg(User drag screen)
-   * =>Ready
-   * =>Loading(User end drag and  the condition is ok)
-   * =>Cancel(User end drag and the condition is not ok)
-   * =>End ( complete the action)
-   *
-   * The State convertion :
-   *
-   *   1 End=>Drag            when the state is End and user begin to drag(notification is ScrollStartNotification)
-   *   2 Drag=>Loading/Cancel    Two loading: head or foot,  condition: when user end drag
-   *   3 Loading=>Cancels         The callback has been called
-   *   4 Cancel =>End
-   *
-   *
-   */
+  ///
+  ///  State machine:
+  ///
+  /// Darg(User drag screen)
+  /// =>Ready
+  /// =>Loading(User end drag and  the condition is ok)
+  /// =>Cancel(User end drag and the condition is not ok)
+  /// =>End ( complete the action)
+  ///
+  /// The State convertion :
+  ///
+  ///   1 End=>Drag            when the state is End and user begin to drag(notification is ScrollStartNotification)
+  ///   2 Drag=>Loading/Cancel    Two loading: head or foot,  condition: when user end drag
+  ///   3 Loading=>Cancels         The callback has been called
+  ///   4 Cancel =>End
+  ///
+  ///
   bool _handleScrollNotification(ScrollNotification notification) {
     _state(notification);
     return false;
@@ -324,6 +318,7 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
         {
           GridView listView = src as GridView;
           return new GridView.custom(
+            gridDelegate: listView.gridDelegate,
             childrenDelegate: listView.childrenDelegate,
             controller: controller,
             physics: Refresh.createScrollPhysics(listView.physics),

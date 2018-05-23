@@ -14,9 +14,7 @@ enum RefreshState {
   loading,
 }
 
-/**
- * refresh componet
- */
+///refresh componet
 class RefreshWidgetController extends ValueNotifier<double> {
   RefreshWidgetController()
       : _state = new ValueNotifier(RefreshState.drag),
@@ -26,7 +24,7 @@ class RefreshWidgetController extends ValueNotifier<double> {
 
   bool get loading => _state.value == RefreshState.loading;
 
-  void set state(RefreshState state) {
+  set state(RefreshState state) {
     _state.value = state;
   }
 
@@ -36,7 +34,7 @@ class RefreshWidgetController extends ValueNotifier<double> {
   double get value => super.value;
 
   @override
-  void set value(double newValue) {
+  set value(double newValue) {
     if (loading) return;
     super.value = newValue;
   }
@@ -114,11 +112,7 @@ class _RefreshHeaderState extends State<RefreshWidget>
     _positionFactor = widget.createTween(widget).animate(_positionController);
   }
 
-  /**
-   *
-   * End=>Loading=>End
-   *
-   */
+  ///End=>Loading=>End
   void _updateValue() {
     double value = widget.controller.value / (widget.maxOffset + widget.height);
     //let's move head
