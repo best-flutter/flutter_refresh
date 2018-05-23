@@ -179,16 +179,15 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
       ScrollMetrics metrics = notification.metrics;
       double pixels = metrics.pixels;
       if (pixels < 0) {
-        if(_headerValue!=null){
+        if (_headerValue != null) {
           _headerValue.value = -pixels;
         }
       } else {
         //
-        if(_footerValue!=null){
+        if (_footerValue != null) {
           double extValue = pixels - metrics.maxScrollExtent;
           _footerValue.value = extValue;
         }
-
       }
     }
   }
@@ -241,7 +240,6 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-
     _state = _end;
   }
 
@@ -261,34 +259,33 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
   }
 
   void _updateState() {
-    if(widget.onHeaderRefresh!=null){
-      if(_headerValue==null)_headerValue = new RefreshWidgetController();
-      if(_headerHandler==null || _headerHandler.callback != widget.onHeaderRefresh){
+    if (widget.onHeaderRefresh != null) {
+      if (_headerValue == null) _headerValue = new RefreshWidgetController();
+      if (_headerHandler == null ||
+          _headerHandler.callback != widget.onHeaderRefresh) {
         _headerHandler = new _RefreshHeaderHandler(
             controller: _headerValue,
             callback: widget.onHeaderRefresh,
             offset: _headerRefreshOffset);
       }
-
-    }else{
-      if(_headerValue!=null)_headerValue.dispose();
+    } else {
+      if (_headerValue != null) _headerValue.dispose();
       _headerHandler = null;
     }
 
-    if(widget.onFooterRefresh!=null){
-      if(_footerValue==null)_footerValue = new RefreshWidgetController();
-      if(_footerHandler ==null || _footerHandler.callback != widget.onFooterRefresh){
+    if (widget.onFooterRefresh != null) {
+      if (_footerValue == null) _footerValue = new RefreshWidgetController();
+      if (_footerHandler == null ||
+          _footerHandler.callback != widget.onFooterRefresh) {
         _footerHandler = new _RefreshFooterHandler(
             controller: _footerValue,
             callback: widget.onFooterRefresh,
             offset: _footerRefreshOffset);
       }
-
-    }else{
-      if(_footerValue!=null)_footerValue.dispose();
+    } else {
+      if (_footerValue != null) _footerValue.dispose();
       _footerHandler = null;
     }
-
 
     ScrollController controller = widget.scrollController;
     if (controller == null) {
@@ -373,11 +370,9 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
       onNotification: _handleScrollNotification,
     );
 
-    List<Widget> children = [
-      notificationChild
-    ];
+    List<Widget> children = [notificationChild];
 
-    if(widget.onHeaderRefresh != null){
+    if (widget.onHeaderRefresh != null) {
       children.add(new RefreshWidget(
         height: _headerRefreshOffset,
         controller: _headerValue,
@@ -395,26 +390,23 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
       ));
     }
 
-
-    if( widget.onFooterRefresh!=null ){
-      children.add(
-          new RefreshWidget(
-            height: _footerRefreshOffset,
-            controller: _footerValue,
-            createTween: createTweenForFooter,
-            maxOffset: 300.0,
-            alignment: Alignment.bottomCenter,
-            childBuilder:
-                (BuildContext context, RefreshWidgetController controller) {
-              return new DefaultRefreshChild(
-                controller: controller,
-                icon: new Icon(Icons.arrow_upward),
-                showLastUpdate: false,
-                up: false,
-              );
-            },
-          )
-      );
+    if (widget.onFooterRefresh != null) {
+      children.add(new RefreshWidget(
+        height: _footerRefreshOffset,
+        controller: _footerValue,
+        createTween: createTweenForFooter,
+        maxOffset: 300.0,
+        alignment: Alignment.bottomCenter,
+        childBuilder:
+            (BuildContext context, RefreshWidgetController controller) {
+          return new DefaultRefreshChild(
+            controller: controller,
+            icon: new Icon(Icons.arrow_upward),
+            showLastUpdate: false,
+            up: false,
+          );
+        },
+      ));
     }
 
     return new Stack(

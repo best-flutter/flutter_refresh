@@ -165,7 +165,8 @@ class _DefaultRefreshHeaderState extends State<DefaultRefreshChild>
 
   @override
   Widget build(BuildContext context) {
-    TextStyle style = new TextStyle(fontSize: 14.0);
+    TextStyle style =
+        Theme.of(context).textTheme.body1; // //new TextStyle(fontSize: 14.0);
 
     List<Widget> texts = [];
     if (widget.showState) {

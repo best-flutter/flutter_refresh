@@ -1,12 +1,18 @@
 name: flutter_refresh
 description: A new flutter package project.
 version: 0.0.1
-author:
-homepage:
+author: JZoom <jzoom8112@gmail.com>
+homepage: https://github.com/jzoom/flutter_refresh
 
 dependencies:
   flutter:
     sdk: flutter
+
+
+
+environment:
+  sdk: ">=2.0.0-dev.48.0 <3.0.0"
+  flutter: ">=0.1.4 <3.0.0"
 
 dev_dependencies:
   flutter_test:

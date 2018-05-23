@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         body: new SafeArea(
             child: new Refresh(
           onFooterRefresh: onFooterRefresh,
-          // onHeaderRefresh: onHeaderRefresh,
+          onHeaderRefresh: onHeaderRefresh,
           childBuilder: (BuildContext context,
               {ScrollController controller, ScrollPhysics physics}) {
             return new Container(
@@ -89,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               itemCount: _itemCount,
             ));
           },
-        )));
+        )
+        )
+    );
   }
 }
