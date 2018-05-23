@@ -26,20 +26,48 @@ in your project's root directory.
 
 # Roadmap
 
->>see:
+>>see:[ROADMAP.md](https://github.com/jzoom/flutter_refresh/blob/master/ROADMAP.md)
+
+# Changelogs
+
+>>see:[CHANGELOG.md](https://github.com/jzoom/flutter_refresh/blob/master/README.md)
 
 # Quick Start
 
 Add 
 ```
 
+import 'package:flutter_refresh/flutter_refresh.dart';
 
 ```
 
 and write the code like this:
 
 ```
-new Refresh(
+
+
+  Future<Null> onFooterRefresh() {
+    return new Future.delayed(new Duration(seconds: 2), () {
+      setState(() {
+        _itemCount += 10;
+      });
+    });
+  }
+
+  
+  Future<Null> onHeaderRefresh() {
+    return new Future.delayed(new Duration(seconds: 2), () {
+      setState(() {
+        _itemCount = 10;
+      });
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    ...
+    return new Refresh(
           onFooterRefresh: onFooterRefresh,
           onHeaderRefresh: onHeaderRefresh,
           childBuilder: (BuildContext context,
@@ -52,10 +80,14 @@ new Refresh(
               itemCount: _itemCount,
             ));
           },
-        )
+        );
+  }
+
 
 
 ```
+
+>> full example see here: [main.dart](https://github.com/jzoom/flutter_refresh/blob/master/example/lib/main.dart).
 
 
 

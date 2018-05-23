@@ -53,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
   }
 
+
   Future<Null> onFooterRefresh() {
     return new Future.delayed(new Duration(seconds: 2), () {
       setState(() {
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       });
     });
   }
+
 
   Future<Null> onHeaderRefresh() {
     return new Future.delayed(new Duration(seconds: 2), () {
