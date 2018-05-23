@@ -6,6 +6,9 @@ A Flutter plugin for refreshing every scrollable view by pulling down-up.
 # Show cases
 
 
+![](https://github.com/jzoom/flutter_refresh/raw/master/example/res/1.gif)
+
+
 # Roadmap
 
 >>see:[ROADMAP.md](https://github.com/jzoom/flutter_refresh/blob/master/ROADMAP.md)
