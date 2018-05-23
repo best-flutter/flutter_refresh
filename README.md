@@ -6,24 +6,6 @@ A Flutter plugin for refreshing every scrollable view by pulling down-up.
 # Show cases
 
 
-# Installation
-
-
-Add 
-
-```bash
-
-flutter_refresh : ^0.0.4
-
-```
-to your pubspec.yaml ,and run 
-
-```bash
-flutter packages get 
-```
-in your project's root directory.
-
-
 # Roadmap
 
 >>see:[ROADMAP.md](https://github.com/jzoom/flutter_refresh/blob/master/ROADMAP.md)
@@ -34,7 +16,29 @@ in your project's root directory.
 
 # Quick Start
 
-Add 
+
+## Installation
+
+
+1 Add 
+
+```bash
+
+flutter_refresh : ^0.0.1
+
+```
+to your pubspec.yaml ,and run 
+
+```bash
+flutter packages get 
+```
+in your project's root directory.
+
+
+
+
+2 Add 
+
 ```
 
 import 'package:flutter_refresh/flutter_refresh.dart';
