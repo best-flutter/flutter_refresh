@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class DefaultRefreshLocal {
   static DefaultRefreshLocal en(
           {String loading: "loading...",
+          String error: 'load error...',
           String pullDownToRefresh: "pull down to refresh",
           String pullUpToRefresh: "pull up to refresh",
           String releaseToRefresh: "release to refresh",
           String lastUpdate = "last update"}) =>
       new DefaultRefreshLocal(
+          error: error,
           lastUpdate: lastUpdate,
           loading: loading,
           releaseToRefresh: releaseToRefresh,
@@ -17,11 +19,13 @@ class DefaultRefreshLocal {
 
   static DefaultRefreshLocal zh(
           {String loading: "加载中...",
+          String error: "加载失败...",
           String pullDownToRefresh: "下拉刷新",
           String pullUpToRefresh: "上拉加载更多",
           String releaseToRefresh: "放开加载",
           String lastUpdate = "最后更新"}) =>
       new DefaultRefreshLocal(
+          error: error,
           lastUpdate: lastUpdate,
           loading: loading,
           releaseToRefresh: releaseToRefresh,
@@ -33,9 +37,11 @@ class DefaultRefreshLocal {
   final String pullUpToRefresh;
   final String releaseToRefresh;
   final String lastUpdate;
+  final String error;
 
   const DefaultRefreshLocal(
       {this.lastUpdate,
+      this.error,
       this.loading,
       this.pullUpToRefresh,
       this.pullDownToRefresh,
@@ -135,6 +141,12 @@ class _DefaultRefreshHeaderState extends State<DefaultRefreshChild>
       case RefreshState.loading:
         {}
         break;
+      case RefreshState.success:
+        {}
+        break;
+      case RefreshState.error:
+        {}
+        break;
     }
 
     setState(() {
@@ -168,17 +180,30 @@ class _DefaultRefreshHeaderState extends State<DefaultRefreshChild>
     TextStyle style =
         Theme.of(context).textTheme.body1; // //new TextStyle(fontSize: 14.0);
 
+    String stateText;
+    switch (_state) {
+      case RefreshState.loading:
+        stateText = widget.local.loading;
+        break;
+      case RefreshState.ready:
+        stateText = widget.local.releaseToRefresh;
+        break;
+      case RefreshState.drag:
+      case RefreshState.success:
+        stateText = (widget.up
+            ? widget.local.pullDownToRefresh
+            : widget.local.pullUpToRefresh);
+        break;
+      case RefreshState.error:
+        stateText = widget.local.error;
+        break;
+    }
+
     List<Widget> texts = [];
     if (widget.showState) {
       texts.add(
         new Text(
-          _state == RefreshState.loading
-              ? widget.local.loading
-              : (_state == RefreshState.ready
-                  ? widget.local.releaseToRefresh
-                  : (widget.up
-                      ? widget.local.pullDownToRefresh
-                      : widget.local.pullUpToRefresh)),
+          stateText,
           style: style,
         ),
       );

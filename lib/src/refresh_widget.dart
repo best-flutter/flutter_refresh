@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter_refresh/src/refresh_child.dart';
+import 'dart:math' as Math;
 
 typedef Future<Null> RefresherCallback();
 
@@ -12,6 +13,10 @@ enum RefreshState {
   ready,
   //User has released dragging
   loading,
+  //reset the position
+  success,
+  //error
+  error,
 }
 
 ///refresh componet
@@ -39,6 +44,10 @@ class RefreshWidgetController extends ValueNotifier<double> {
     super.value = newValue;
   }
 
+  void onSuccess() {
+    this.state = RefreshState.success;
+  }
+
   void addStateListener(VoidCallback updateState) {
     _state.addListener(updateState);
   }
@@ -51,6 +60,10 @@ class RefreshWidgetController extends ValueNotifier<double> {
   void dispose() {
     _state.dispose();
     super.dispose();
+  }
+
+  void onError(e) {
+    _state.value = RefreshState.error;
   }
 }
 
@@ -73,7 +86,7 @@ RectTween createTweenForFooter(RefreshWidget widget) {
 class RefreshWidget extends StatefulWidget {
   final double height;
 
-  final double maxOffset;
+  final double maxOffset = 300.0;
 
   final RefreshChildBuilder childBuilder;
 
@@ -88,8 +101,7 @@ class RefreshWidget extends StatefulWidget {
       this.controller,
       this.childBuilder,
       this.createTween,
-      this.alignment,
-      this.maxOffset})
+      this.alignment})
       : assert(controller != null);
 
   @override
@@ -114,7 +126,8 @@ class _RefreshHeaderState extends State<RefreshWidget>
 
   ///End=>Loading=>End
   void _updateValue() {
-    double value = widget.controller.value / (widget.maxOffset + widget.height);
+    double value = Math.min(widget.controller.value, widget.height) /
+        (widget.maxOffset + widget.height);
     //let's move head
     _positionController.value = value;
   }
@@ -133,6 +146,13 @@ class _RefreshHeaderState extends State<RefreshWidget>
         }
         break;
       case RefreshState.ready:
+        break;
+      case RefreshState.error:
+      case RefreshState.success:
+        _positionController
+            .animateTo(0.0,
+                duration: new Duration(milliseconds: 300), curve: Curves.ease)
+            .whenComplete(() {});
         break;
     }
   }

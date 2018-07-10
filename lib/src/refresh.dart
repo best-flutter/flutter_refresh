@@ -21,7 +21,6 @@ bool checkChild(Widget src) {
   return false;
 }
 
-
 typedef Widget RefreshScrollViewBuilder(BuildContext context,
     {ScrollController controller, ScrollPhysics physics});
 
@@ -100,7 +99,7 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
   _RefreshHandler _footerHandler;
 
   ScrollController controller;
-  StateHandler _state;
+  StateHandler _handler;
 
   bool _isAnimation = false;
   bool _animationComplete = false;
@@ -124,9 +123,19 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
 
   void _loading(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
-      assert(_hander != null);
-      _scrollToAnimationFirst(_hander.getScrollOffset(notification.metrics));
+      assert(_refreshHandle != null);
+      _scrollToAnimationFirst(
+          _refreshHandle.getScrollOffset(notification.metrics));
+    } else if (notification is ScrollStartNotification) {
+      ScrollStartNotification startNotification = notification;
+      if (startNotification.dragDetails != null) {
+        _handler = _drag;
+      }
+      //
+
     }
+
+    /// 如果这个时候有drag?
   }
 
   ///
@@ -147,46 +156,21 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
   ///
   ///
   bool _handleScrollNotification(ScrollNotification notification) {
-    _state(notification);
+    _handler(notification);
     return false;
   }
-//
-//
-//  void _cancel(ScrollNotification notification){
-//    if (notification is ScrollStartNotification) {
-//      _state = _end;
-//    } else if (notification is ScrollUpdateNotification) {
-//      if(_hander!=null){
-//        _hander.cancel(notification.metrics);
-//      }
-//    }
-//  }
 
   void _end(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
       if (notification.dragDetails != null) {
         // print("drag start");
-        _state = _drag;
+        _handler = _drag;
         _animationComplete = false;
-      }
-    } else if (notification is ScrollUpdateNotification) {
-      ScrollMetrics metrics = notification.metrics;
-      double pixels = metrics.pixels;
-      if (pixels < 0) {
-        if (_headerValue != null) {
-          _headerValue.value = -pixels;
-        }
-      } else {
-        //
-        if (_footerValue != null) {
-          double extValue = pixels - metrics.maxScrollExtent;
-          _footerValue.value = extValue;
-        }
       }
     }
   }
 
-  _RefreshHandler _hander;
+  _RefreshHandler _refreshHandle;
 
   void _drag(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
@@ -196,37 +180,57 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
         if (_headerHandler != null &&
             (moveValue = _headerHandler.getRefreshWidgetMoveValue(metrics)) >
                 0) {
-          _hander = _headerHandler;
+          _refreshHandle = _headerHandler;
         } else if (_footerHandler != null &&
             (moveValue = _footerHandler.getRefreshWidgetMoveValue(metrics)) >
                 0) {
-          _hander = _footerHandler;
+          _refreshHandle = _footerHandler;
         } else {
-          _hander = null;
+          _refreshHandle = null;
         }
-        if (_hander != null) {
-          if (_hander.isReady(moveValue)) {
-            _hander.changeState(RefreshState.ready);
+        if (_refreshHandle != null) {
+          if (_refreshHandle.isReady(moveValue)) {
+            _refreshHandle.changeState(RefreshState.ready);
           } else {
-            _hander.changeState(RefreshState.drag);
+            _refreshHandle.changeState(RefreshState.drag);
           }
-          _hander.controller.value = moveValue;
+          _refreshHandle.controller.value = moveValue;
         }
       } else {
-        if (_hander != null &&
-            _hander.isReady(_hander.getRefreshWidgetMoveValue(metrics))) {
-          _hander.loading(metrics).whenComplete(() {
-            //loading ok
-            assert(_hander != null);
+        if (_refreshHandle != null &&
+            _refreshHandle
+                .isReady(_refreshHandle.getRefreshWidgetMoveValue(metrics))) {
+          _enterLoading(_refreshHandle, metrics);
 
-            _hander = null;
-            _state = _end;
-          });
-          _state = _loading;
+          _isAnimation = false;
+          _animationComplete = false;
+          _handler = _loading;
           return;
         }
-        _state = _end;
+        _handler = _end;
       }
+    }
+  }
+
+  void _enterLoading(
+      _RefreshHandler _refreshHandle, ScrollMetrics metrics) async {
+    double maxExtent;
+
+    if (_refreshHandle == _footerHandler) {
+      maxExtent = controller.position.maxScrollExtent;
+    }
+
+    try {
+      await _refreshHandle.loading(metrics);
+      _refreshHandle.controller.onSuccess();
+    } catch (e) {
+      _refreshHandle.controller.onError(e);
+    } finally {
+      if (_refreshHandle == _footerHandler) {
+        controller.jumpTo(maxExtent - _footerRefreshOffset * 2);
+      }
+      _refreshHandle = null;
+      _handler = _end;
     }
   }
 
@@ -234,7 +238,7 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _state = _end;
+    _handler = _end;
   }
 
   ScrollController _tryGetController(Widget src) {
@@ -373,7 +377,6 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
         controller: _headerValue,
         createTween: createTweenForHeader,
         alignment: Alignment.topCenter,
-        maxOffset: 300.0,
         childBuilder:
             (BuildContext context, RefreshWidgetController controller) {
           return new DefaultRefreshChild(
@@ -390,7 +393,6 @@ class _RefreshState extends State<Refresh> with TickerProviderStateMixin {
         height: _footerRefreshOffset,
         controller: _footerValue,
         createTween: createTweenForFooter,
-        maxOffset: 300.0,
         alignment: Alignment.bottomCenter,
         childBuilder:
             (BuildContext context, RefreshWidgetController controller) {

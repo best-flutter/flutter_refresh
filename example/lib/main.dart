@@ -12,20 +12,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new MyHomePage(title: 'Pull to refresh'),
-      localizationsDelegates: [
-        //   Refresh.delegate()
-      ],
-      routes: {
-        'route':(BuildContext context){
-          return null;
-        },
-      }
-    );
+        title: 'Flutter Demo',
+        theme: new ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: new MyHomePage(title: 'Pull to refresh'),
+        localizationsDelegates: [
+          //   Refresh.delegate()
+        ],
+        routes: {
+          'route': (BuildContext context) {
+            return null;
+          },
+        });
   }
 }
 
@@ -43,7 +42,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return new Padding(
       key: new Key(index.toString()),
       padding: new EdgeInsets.all(10.0),
-      child: new Text("顺序数据:$index",
+      child: new Text(
+        "Orered data:$index",
         style: new TextStyle(fontSize: 14.0),
       ),
     );
@@ -53,24 +53,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    Navigator.popUntil(context, (Route<dynamic> route){
-      if(route.settings.name == ''){
-
-      }
-    });
-    /*
-    Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context){
-
-      return null;
-
-    })).then((data){
-
-
-
-    });*/
-
-
-
     _itemCount = 10;
     super.initState();
   }
@@ -84,18 +66,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   Future<Null> onHeaderRefresh() {
+    throw new Exception("");
+    /*
     return new Future.delayed(new Duration(seconds: 2), () {
       setState(() {
         _itemCount = 10;
       });
-    });
+    });*/
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return new Scaffold(
         appBar: new AppBar(
           title: new Text(widget.title),
@@ -104,16 +85,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             child: new Refresh(
           onFooterRefresh: onFooterRefresh,
           onHeaderRefresh: onHeaderRefresh,
-          childBuilder: (BuildContext context,
-              {ScrollController controller, ScrollPhysics physics}) {
-            return new Container(
-                child: new ListView.builder(
-              physics: physics,
-              controller: controller,
-              itemBuilder: _itemBuilder,
-              itemCount: _itemCount,
-            ));
-          },
+          child: new ListView.builder(
+            itemBuilder: _itemBuilder,
+            itemCount: _itemCount,
+          ),
         )));
   }
 }

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_refresh/flutter_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,14 +15,12 @@ class MyApp extends StatelessWidget {
           //   Refresh.delegate()
         ],
         routes: {
-          'route':(BuildContext context){
+          'route': (BuildContext context) {
             return null;
           },
-        }
-    );
+        });
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -73,31 +69,27 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return new Scaffold(
         appBar: new AppBar(
           title: new Text(widget.title),
         ),
         body: new SafeArea(
             child: new Refresh(
-              onFooterRefresh: onFooterRefresh,
-              onHeaderRefresh: onHeaderRefresh,
-              childBuilder: (BuildContext context,
-                  {ScrollController controller, ScrollPhysics physics}) {
-                return new Container(
-                    child: new ListView.builder(
-                      physics: physics,
-                      controller: controller,
-                      itemBuilder: _itemBuilder,
-                      itemCount: _itemCount,
-                    ));
-              },
-            )));
+          onFooterRefresh: onFooterRefresh,
+          onHeaderRefresh: onHeaderRefresh,
+          childBuilder: (BuildContext context,
+              {ScrollController controller, ScrollPhysics physics}) {
+            return new Container(
+                child: new ListView.builder(
+              physics: physics,
+              controller: controller,
+              itemBuilder: _itemBuilder,
+              itemCount: _itemCount,
+            ));
+          },
+        )));
   }
 }
-
 
 void main() {
   testWidgets('adds one to input values', (WidgetTester tester) async {
